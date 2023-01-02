@@ -15,7 +15,6 @@ const uploader = async (req, res, next) => {
       public_id: fileName,
       folder: "bujank_coffee",
    };
-
    try {
       const result = await cloudinary.uploader.upload(
          datauri.content,
