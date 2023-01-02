@@ -27,6 +27,12 @@ const login = (body) => {
                   err: new Error("Email or Passwords is WRONG!"),
                   statusCode: 401,
                });
+            // 3. Process Login => create jwt => return jwt to users
+            const payload = {
+               user_id: response.rows[0].id,
+               email: response.rows[0].email,
+               role: response.rows[0].role,
+            };
             const hashedPasswords = response.rows[0].passwords; // <= Get passwords from database
             postgreDb.query(getEmailActivation, [email], (err, response) => {
                console.log(response.rows);
@@ -49,13 +55,6 @@ const login = (body) => {
                         err: new Error("Email or Passwords is WRONG!"),
                         statusCode: 401,
                      });
-
-                  // 3. Process Login => create jwt => return jwt to users
-                  const payload = {
-                     user_id: response.rows[0].id,
-                     email: response.rows[0].email,
-                     role: response.rows[0].role,
-                  };
                   // jwt.sign(
                   //     payload,
                   //     process.env.SECRET_KEY,
@@ -87,7 +86,6 @@ const login = (body) => {
       // 2. Cek apakah password yang di input sama dengan di database
    });
 };
-
 const logout = (token) => {
    return new Promise((resolve, reject) => {
       const jwtr = new JWTR(client);
