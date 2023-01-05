@@ -46,7 +46,7 @@ module.exports = uploader;
 //     const fileName = `${body.prefix}_${body.user_id}`           //user_id ganti token
 //     const cloudinaryOpt = {
 //         public_id: fileName,
-//         folder: "coffee_addict",
+//         folder: "bujank_coffee",
 //     }
 //     try {
 //         cloudinary.uploader.upload(datauri.content, cloudinaryOpt);

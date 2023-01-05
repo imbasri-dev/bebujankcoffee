@@ -15,6 +15,7 @@ const uploader = async (req, res, next) => {
       public_id: fileName,
       folder: "bujank_coffee",
    };
+
    try {
       const result = await cloudinary.uploader.upload(
          datauri.content,
@@ -45,7 +46,7 @@ module.exports = uploader;
 //     const fileName = `${body.prefix}_${body.user_id}`           //user_id ganti token
 //     const cloudinaryOpt = {
 //         public_id: fileName,
-//         folder: "coffee_addict",
+//         folder: "bujank_coffee",
 //     }
 //     try {
 //         cloudinary.uploader.upload(datauri.content, cloudinaryOpt);

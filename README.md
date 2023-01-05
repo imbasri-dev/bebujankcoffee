@@ -1,5 +1,4 @@
 <p align="center">
-  <img src="public\images\bujank coffee.png" width=300 alt="logo-icon" />
   <h1 align='center'>Bujank Coffee Shop</h1>
 </p>
 

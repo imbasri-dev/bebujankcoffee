@@ -38,7 +38,7 @@ const register = async (req, res) => {
          subject: "Email Verification !",
          // template: "verificationEmail.html",
          template: "verificationEmail.html",
-         buttonUrl: `https://lepisa-fe.vercel.app/auth/${response.data.pinactivation}`,
+         buttonUrl: `https://bujankcoffee-fe.vercel.app/auth/${response.data.pinactivation}`,
       };
       await sendMail(setSendEmail);
       sendResponse.success(res, 200, {
@@ -109,11 +109,10 @@ const drop = async (req, res) => {
    }
 };
 
-// update status
 const updateStatus = async (req, res) => {
    try {
-      const { otp } = req.params;
-      await userRepo.updateStatus(otp);
+      const { id } = req.params;
+      await userRepo.updateStatus(id);
       sendResponse.success(res, 200, {
          msg: "success active account",
       });
@@ -123,7 +122,6 @@ const updateStatus = async (req, res) => {
    }
 };
 
-// change forgot
 const forgotPassword = async (req, res) => {
    try {
       const response = await userRepo.forgotPassword(req.params.email);
@@ -160,6 +158,7 @@ const forgotChange = async (req, res) => {
       sendResponse.error(res, statusCode, { msg: message });
    }
 };
+
 // Nama function di atas di bungkus menjadi object
 const userController = {
    get,

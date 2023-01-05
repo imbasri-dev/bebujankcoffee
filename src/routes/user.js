@@ -2,26 +2,28 @@ const express = require("express");
 const usersRouter = express.Router();
 
 // Koneksi ke controller user
-const isLogin = require("../middleware/isLogin.js");
-const allowedRole = require("../middleware/allowedRole.js");
-const validate = require("../middleware/validate.js");
-const uploadimages = require("../middleware/upload.js");
-const sendResponse = require("../helper/response");
+const isLogin = require("../middleware/isLogin.js")
+const allowedRole = require("../middleware/allowedRole.js")
+const validate = require("../middleware/validate.js")
+const uploadimages = require("../middleware/upload.js")
+const sendResponse = require("../helper/response")
 
 const multer = require("multer");
 const cloudinaryUploader = require("../middleware/cloudinaryProfile");
 const { diskUpload, memoryUpload } = require("../middleware/upload");
 function uploadFile(req, res, next) {
-   memoryUpload.single("image")(req, res, function (err) {
-      if (err instanceof multer.MulterError) {
-         console.log(err);
-         return res.status(400).json({ msg: err.message });
-      } else if (err) {
-         return res.json({ msg: err.message });
-      }
-      next();
-   });
+    memoryUpload.single("image")(req, res, function (err) {
+        if (err instanceof multer.MulterError) {
+            console.log(err);
+            return res.status(400).json({ msg: err.message });
+        } else if (err) {
+            return res.json({ msg: err.message });
+        }
+        next();
+    });
 }
+
+
 
 // function uploadFile(req, res, next) {
 //     const upload = uploadimages.single('image');
@@ -36,61 +38,28 @@ function uploadFile(req, res, next) {
 //             // res.json('Format image Wrong!')
 //             return sendResponse.error(res, 415, err.message)
 //         }
-//         // Everything went fine.
+//         // Everything went fine. 
 //         next()
 //     })
 // }
 
-const {
-   get,
-   getId,
-   register,
-   profile,
-   editPasswords,
-   drop,
-   updateStatus,
-   forgotChange,
-   forgotPassword,
-} = require("../controller/user.js");
+
+const { get, getId, register, profile, editPasswords, drop, updateStatus, forgotPassword, forgotChange } = require("../controller/user.js");
+
+
 
 // isLogin() <= middleware, ngunci endpoint harus login
 
 // Routes Tabel Users
+usersRouter.get("/", isLogin(), allowedRole('admin'), get);
+usersRouter.get("/UserID", isLogin(), allowedRole('user', 'admin'), getId);
+usersRouter.post("/", validate.body("email", "passwords", "phone_number"), register);
+usersRouter.patch("/profile", isLogin(), allowedRole('user'), uploadFile, cloudinaryUploader, validate.body('firstname', 'lastname', 'displayname', 'gender', 'birthday', 'address', 'image'), profile)
+usersRouter.patch("/editPasswords", isLogin(), allowedRole('admin', 'user'), validate.body('old_password', 'new_password'), editPasswords)
+usersRouter.delete("/", isLogin(), allowedRole('user'), drop)
+usersRouter.get("/verify/:id",updateStatus)
+usersRouter.patch("/forgot/:email",forgotPassword)
+usersRouter.patch('/changePwd',forgotChange)
 
-usersRouter.get("/", isLogin(), allowedRole("admin"), get);
-usersRouter.get("/UserID", isLogin(), allowedRole("user", "admin"), getId);
-usersRouter.post(
-   "/",
-   validate.body("email", "passwords", "phone_number"),
-   register
-);
-usersRouter.patch(
-   "/profile",
-   isLogin(),
-   allowedRole("user"),
-   uploadFile,
-   cloudinaryUploader,
-   validate.body(
-      "firstname",
-      "lastname",
-      "displayname",
-      "gender",
-      "birthday",
-      "address",
-      "image"
-   ),
-   profile
-);
-usersRouter.patch("/forgot/:email", forgotPassword);
-usersRouter.patch("/changePwd", forgotChange);
-usersRouter.patch(
-   "/editPasswords",
-   isLogin(),
-   allowedRole("admin", "user"),
-   validate.body("old_password", "new_password"),
-   editPasswords
-);
-usersRouter.delete("/", isLogin(), allowedRole("user"), drop);
-usersRouter.get("/verify/:otp", updateStatus);
 
 module.exports = usersRouter;
